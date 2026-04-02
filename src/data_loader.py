@@ -11,7 +11,7 @@ def load_raw_data():
     
     # Navigate up one level to project root, then into data/raw
     project_root = current_dir.parent 
-    data_path = project_root / 'data' / 'raw' / 'appointments.csv'
+    data_path = project_root / 'data' / 'raw' / 'Medical_Appointment_No_Shows.csv'
     
     if not data_path.exists():
         raise FileNotFoundError(f"Data file not found at {data_path}. Please ensure data is downloaded.")
