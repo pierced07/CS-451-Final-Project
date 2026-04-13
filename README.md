@@ -32,6 +32,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+### Run Pipeline
+```bash
 ### Run EDA Notebook
 jupyter notebook notebooks/01_EDA.ipynb
 
