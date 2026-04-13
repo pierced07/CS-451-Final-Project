@@ -34,11 +34,11 @@ pip install -r requirements.txt
 
 ### Run Pipeline
 ```bash
-### Run EDA Notebook
+# Run EDA Notebook
 jupyter notebook notebooks/01_EDA.ipynb
 
-### Cleaning Pipeline
+# Cleaning Pipeline
 python src/cleaning.py
 
-### Streamlit App
+# Streamlit App
 streamlit run app.py
