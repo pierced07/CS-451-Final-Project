@@ -91,7 +91,24 @@ def clean_appointment_data(df):
     if available_cols:
         df_clean['has_prior_conditions'] = df_clean[available_cols].sum(axis=1).clip(0, 1)
     
-    # Feature 5: age_group (categorical for analysis)
+    # Feature 5: patient prior no-shows (Crucial predictive feature)
+    # Sort chronologically by appointment day to avoid data leakage
+    df_clean = df_clean.sort_values(by='AppointmentDay')
+    
+    # We must treat 'No-show' as numeric to track history: Yes=1, No=0
+    temp_target = df_clean['No-show'].map({'Yes': 1, 'No': 0})
+    
+    # Count rolling previous appointments and previous no-shows
+    df_clean['total_prior_appointments'] = df_clean.groupby('PatientId').cumcount()
+    
+    # Use the mapped temp_target rather than df_clean['No-show'] which still has strings
+    df_clean['prior_no_shows'] = temp_target.groupby(df_clean['PatientId']).apply(
+        lambda x: x.shift().cumsum().fillna(0)
+    ).reset_index(level=0, drop=True)
+    
+    # Avoid ZeroDivisionError by replacing 0 with 1 in the denominator (since 0/1 is still 0)
+    denom = df_clean['total_prior_appointments'].replace(0, 1)
+    df_clean['prior_no_show_rate'] = (df_clean['prior_no_shows'] / denom).fillna(0)
     df_clean['age_group'] = pd.cut(
         df_clean['Age'], 
         bins=[0, 18, 35, 60, 100], 
